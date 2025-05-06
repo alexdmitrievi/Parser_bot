@@ -10,6 +10,10 @@ app = FastAPI()
 q = Queue(connection=Redis.from_url(os.getenv("REDIS_URL")))
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 
+@app.get("/ping")
+def ping():
+    return {"pong": True}
+
 @app.post("/webhook")
 async def webhook(req: Request):
     data = await req.json()
@@ -43,4 +47,5 @@ async def webhook(req: Request):
         return {"status": "queued"}
 
     return {"status": "ignored"}
+
 
