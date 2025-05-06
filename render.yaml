@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: telegram-docbot-web
+    env: python
+    buildCommand: "pip install -r web/requirements.txt"
+    startCommand: "uvicorn web.main:app --host 0.0.0.0 --port 10000"
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          name: redis
+          type: redis
+          property: connectionString
+
+  - type: worker
+    name: telegram-docbot-worker
+    env: python
+    buildCommand: "pip install -r worker/requirements.txt"
+    startCommand: "rq worker"
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          name: redis
+          type: redis
+          property: connectionString
